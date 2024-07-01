@@ -1,8 +1,7 @@
 from settings import * 
 
 
-
-
+from sprites import *
 
 class Game:
     
@@ -15,6 +14,13 @@ class Game:
         pygame.display.set_caption("PONG")
         self.clock = pygame.time.Clock()
         
+        # sprites groups
+        self.all_sprites = pygame.sprite.Group()
+        self.paddle_sprites = pygame.sprite.Group()
+        
+        
+        self.player = Player(POS['player'],(self.all_sprites,self.paddle_sprites))
+        self.ball = Ball(self.all_sprites,self.paddle_sprites)
         
         
     def run(self):
@@ -23,7 +29,7 @@ class Game:
         # Game Loop
         while self.running:
             # Delta Time 
-            dt = self.clock.tick()
+            dt = self.clock.tick() / 1000
             
             
             # Event Loop
@@ -32,9 +38,11 @@ class Game:
                     self.running = False
                     
             # Draw The Game
-            self.display_surface.fill('black')
+            self.display_surface.fill(COLORS['bg'])
+            self.all_sprites.draw(self.display_surface)
             
-            
+            #update sprite 
+            self.all_sprites.update(dt)
             # Update The display
             pygame.display.update()
             
