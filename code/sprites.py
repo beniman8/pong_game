@@ -2,7 +2,7 @@ from settings import *
 
 from random import choice, uniform
 
-class Player(pygame.sprite.Sprite):
+class Paddle(pygame.sprite.Sprite):
     
     def __init__(self,pos, groups) -> None:
         super().__init__(groups)
@@ -18,8 +18,7 @@ class Player(pygame.sprite.Sprite):
         
         # Movement 
         self.direction = 0
-        self.speed= SPEED['player']
-
+        
 
     def move(self,dt):
         
@@ -27,14 +26,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.top = 0 if self.rect.top < 0 else self.rect.top
         self.rect.bottom = WINDOW_HEIGHT if self.rect.bottom > WINDOW_HEIGHT else self.rect.bottom
 
-    
-    def get_direction(self):
-        
-        keys = pygame.key.get_pressed()
-        self.direction = int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])
-        
-        
-        
     def update(self, dt) -> None:
         self.old_rect = self.rect.copy()
         self.get_direction()
@@ -42,6 +33,31 @@ class Player(pygame.sprite.Sprite):
         
 
         return super().update()
+    
+    
+class Player(Paddle):
+    def __init__(self, pos, groups) -> None:
+        super().__init__(pos, groups)
+        self.speed= SPEED['player']
+    
+    def get_direction(self):
+        
+        keys = pygame.key.get_pressed()
+        self.direction = int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])
+        
+class Opponent(Paddle):
+    
+    def __init__(self, pos,ball, groups) -> None:
+        super().__init__(pos, groups)
+        self.speed= SPEED['opponent']
+        self.ball = ball
+        
+        
+    def get_direction(self):
+        self.direction = 1 if self.ball.rect.centery > self.rect.centery else -1
+    
+    
+        
     
 class Ball(pygame.sprite.Sprite):
     
@@ -75,7 +91,7 @@ class Ball(pygame.sprite.Sprite):
                         self.rect.right = sprite.rect.left
                         self.direction.x *=-1
                     if self.rect.left <= sprite.rect.right and self.old_rect.left >= sprite.old_rect.right:
-                        self.rect.lef = sprite.rect.right
+                        self.rect.left = sprite.rect.right
                         self.direction.x *= -1
                     else:
                         if self.rect.bottom >= sprite.rect.top and self.old_rect.bottom <=sprite.old_rect.top:

@@ -21,6 +21,7 @@ class Game:
         
         self.player = Player(POS['player'],(self.all_sprites,self.paddle_sprites))
         self.ball = Ball(self.all_sprites,self.paddle_sprites)
+        Opponent(POS['opponent'],self.ball,(self.all_sprites,self.paddle_sprites))
         
         
     def run(self):
